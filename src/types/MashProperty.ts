@@ -1,5 +1,5 @@
 import type { Property } from './Property'
 
-export interface PersonProperty extends Property {
+export interface MashProperty extends Property {
   value: string
 }

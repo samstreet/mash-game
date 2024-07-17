@@ -11,11 +11,18 @@ export default class GameSerice {
   public newGame(): Game {
     const game = {
       RandomNumber: this.randomiser.generateRandomInteger(),
-      MASH: '',
-      Person: [],
-      Car: [],
-      Job: [],
-      Kids: []
+      Predicted: false,
+      Outcome: '',
+      MASH: [
+        { isAvailable: true, value: 'Mansion' },
+        { isAvailable: true, value: 'Apartment' },
+        { isAvailable: true, value: 'Shack' },
+        { isAvailable: true, value: 'Home' }
+      ],
+      Person: this.randomiser.generateRandomPeopleArray(),
+      Car: this.randomiser.generateRandomCarArray(),
+      Job: this.randomiser.generateRandomJobArray(),
+      Kids: this.randomiser.generateRandomKidsArray()
     }
 
     return game

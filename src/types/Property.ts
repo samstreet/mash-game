@@ -1,3 +1,3 @@
-export type Property = {
+export interface Property {
   isAvailable: boolean
 }
