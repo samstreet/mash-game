@@ -1,13 +1,11 @@
-import { beforeEach } from 'node:test'
 import { describe, it, expect } from 'vitest'
-import { RandomiserService } from '../randomiser.service'
+import RandomiserService from '@/services/randomiser.service'
 
-let service: RandomiserService
+describe('randomiser.service', () => {
+  it('generates random number between 3 and 10', () => {
+    const value = new RandomiserService().generateRandomInteger(3, 10)
 
-describe('game.service', () => {
-  beforeEach(() => {
-    service = new RandomiserService()
+    expect(value).toBeGreaterThanOrEqual(3)
+    expect(value).toBeLessThanOrEqual(10)
   })
-
-  it('renders properly', () => {})
 })

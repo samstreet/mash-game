@@ -1,13 +1,9 @@
-import { beforeEach } from 'node:test'
-import { describe, it, expect } from 'vitest'
-import { GameSerice } from '../game.service'
-
-let service: GameSerice
+import { describe, it } from 'vitest'
+import GameSerice from '../game.service'
+import RandomiserService from '../randomiser.service'
 
 describe('game.service', () => {
-  beforeEach(() => {
-    service = new GameSerice()
+  it('renders properly', () => {
+    const service = new GameSerice(new RandomiserService())
   })
-
-  it('renders properly', () => {})
 })

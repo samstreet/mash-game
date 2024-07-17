@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import MashSection from '@/components/mash/MashSection.vue'
-const titles: string[] = ['Partner', 'Job', 'Kids', 'Car']
+defineProps<{
+  titles: string[]
+}>()
 
-const title = (n: number): string => {
-  return titles[n - 1]
-}
+import MashSection from '@/components/mash/MashSection.vue'
 </script>
 
 <template>
   <MashSection
-    v-for="n in 4"
-    :key="n"
-    :section-title="title(n)"
+    v-for="(title, index) in titles"
+    :key="index"
+    :section-title="title"
     class="square bg-gray-200 m-8"
   ></MashSection>
 </template>
