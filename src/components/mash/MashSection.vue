@@ -3,6 +3,7 @@ import type { CarProperty } from '@/types/CarProperty'
 import type { JobProperty } from '@/types/JobProperty'
 import type { KidsProperty } from '@/types/KidsProperty'
 import type { PersonProperty } from '@/types/PersonProperty'
+import AnimatedStrikethrough from '@/components/elements/AnimatedStrikethrough.vue'
 
 defineProps<{
   sectionTitle: string
@@ -16,7 +17,12 @@ defineProps<{
       {{ sectionTitle }}
     </h1>
     <ul class="text-left text-black">
-      <li v-for="(option, key) in options" :key="key">{{ option.value }}</li>
+      <li v-for="(option, key) in options" :key="key">
+        <AnimatedStrikethrough
+          :text="option.value"
+          :is-available="option.isAvailable"
+        ></AnimatedStrikethrough>
+      </li>
     </ul>
   </div>
 </template>

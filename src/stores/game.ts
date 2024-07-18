@@ -7,7 +7,7 @@ export const useGameStore = defineStore(
   () => {
     const titles = ['Person', 'Job', 'Kids', 'Car']
     const previousResults: Game[] = ref([])
-    const currentGame: Game | null = ref(null)
+    const currentGame: Game = ref()
 
     return { titles, currentGame, previousResults }
   },

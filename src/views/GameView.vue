@@ -95,6 +95,6 @@ onMounted(() => {
   </div>
 
   <div v-if="gameStore.currentGame" class="mx-auto p-6 lg:px-8">
-    <MashGrid :titles="gameStore.titles" class="text-left"></MashGrid>
+    <MashGrid :titles="gameStore.titles"></MashGrid>
   </div>
 </template>
