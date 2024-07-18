@@ -7,7 +7,6 @@ import type { PersonProperty } from './PersonProperty'
 export type Game = {
   Predicted: boolean
   Outcome: string
-  RandomNumber: number
   MASH: MashProperty[]
   Person: PersonProperty[]
   Job: JobProperty[]

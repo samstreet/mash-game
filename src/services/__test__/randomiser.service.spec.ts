@@ -20,7 +20,7 @@ describe('randomiser.service', () => {
 
     values.forEach((car: CarProperty) => {
       expect(typeof car).toBe('object')
-      expect(car).toHaveProperty('model')
+      expect(car).toHaveProperty('value')
       expect(car).toHaveProperty('isAvailable')
     })
   })
@@ -32,7 +32,7 @@ describe('randomiser.service', () => {
 
     values.forEach((person: PersonProperty) => {
       expect(typeof person).toBe('object')
-      expect(person).toHaveProperty('name')
+      expect(person).toHaveProperty('value')
       expect(person).toHaveProperty('isAvailable')
     })
   })
@@ -44,7 +44,7 @@ describe('randomiser.service', () => {
 
     values.forEach((kids: KidsProperty) => {
       expect(typeof kids).toBe('object')
-      expect(kids).toHaveProperty('count')
+      expect(kids).toHaveProperty('value')
       expect(kids).toHaveProperty('isAvailable')
     })
   })
@@ -56,7 +56,7 @@ describe('randomiser.service', () => {
 
     values.forEach((job: JobProperty) => {
       expect(typeof job).toBe('object')
-      expect(job).toHaveProperty('title')
+      expect(job).toHaveProperty('value')
       expect(job).toHaveProperty('isAvailable')
     })
   })

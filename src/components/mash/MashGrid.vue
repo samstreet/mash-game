@@ -19,10 +19,17 @@ const getProperty = (obj: any, key: string): [] => {
 
 const predicting = ref(false)
 
-const predict = () => {
+const predict = async () => {
   predicting.value = true
-  gameStore.currentGame = gameService.predict(gameStore.currentGame)
-  predicting.value = false
+  gameService.predict(gameStore.currentGame)
+    .then((game: Game) => {
+      gameStore.currentGame = game
+      gameStore.previousResults.push(game)
+    })
+    .then(() => {
+      setTimeout(() => predicting.value = false, 1000)
+    })
+  
 }
 </script>
 
@@ -42,14 +49,14 @@ const predict = () => {
     <div class="flex mx-auto w-full">
       <MashSection
         section-title="Property"
-        :options="getProperty(gameStore.currentGame, 'MASH')"
+        :options="gameStore.currentGame['MASH']"
         class="square m-2 w-1/5"
       ></MashSection>
 
       <MashSection
         v-for="(title, index) in titles"
         :key="index"
-        :options="getProperty(gameStore.currentGame, title)"
+        :options="gameStore.currentGame[title]"
         :section-title="title"
         class="square m-2 w-1/5"
       ></MashSection>
@@ -59,7 +66,7 @@ const predict = () => {
     <div class="mx-auto items-center text-black">
       <LoadingDots v-if="predicting" />
       <p v-else-if="gameStore.currentGame.Predicted && !predicting">
-        Your result is {{ gameStore.currentGame.Outcome }}
+        {{ gameStore.currentGame.Outcome }}
       </p>
       <p v-else>Click the button to begin your prediction</p>
     </div>

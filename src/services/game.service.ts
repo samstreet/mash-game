@@ -5,13 +5,13 @@ import type { KidsProperty } from '@/types/KidsProperty'
 import type { CarProperty } from '@/types/CarProperty'
 import type { PersonProperty } from '@/types/PersonProperty'
 import type { Property } from '@/types/Property'
+import type { MashProperty } from '@/types/MashProperty'
 
 export default class GameSerice {
   constructor(private readonly randomiser: RandomiserService) {}
 
   public newGame(): Game {
     const game = {
-      RandomNumber: this.randomiser.generateRandomInteger(),
       Predicted: false,
       Outcome: '',
       MASH: [
@@ -47,40 +47,17 @@ export default class GameSerice {
     return game
   }
 
-  public predict(game: Game, startFromIndex: number): Game {
-    if (game.Predicted) return game
+  public predict(game: Game): Promise<Game> {
+    this.predictFromProperties(game.MASH)
+    this.predictFromProperties(game.Person)
+    this.predictFromProperties(game.Job)
+    this.predictFromProperties(game.Kids)
+    this.predictFromProperties(game.Car)
 
-    const cleanGameProperties: Property[] = []
-    if (game.MASH.filter((property: Property) => property.isAvailable).length > 1)
-      cleanGameProperties.push(...game.MASH)
+    game.Predicted = true
+    game.Outcome = this.generateOutcomeStringFromGame(game)
 
-    if (game.Person.filter((property: Property) => property.isAvailable).length > 1)
-      cleanGameProperties.push(...game.Person)
-
-    if (game.Job.filter((property: Property) => property.isAvailable).length > 1)
-      cleanGameProperties.push(...game.Job)
-
-    if (game.Kids.filter((property: Property) => property.isAvailable).length > 1)
-      cleanGameProperties.push(...game.Kids)
-
-    if (game.Car.filter((property: Property) => property.isAvailable).length > 1)
-      cleanGameProperties.push(...game.Car)
-
-    console.log(cleanGameProperties)
-
-    if (cleanGameProperties.length === 6) {
-      game.Predicted = true
-      game.Outcome = this.generateOutcomeStringFromGame(game)
-      return game
-    }
-
-    cleanGameProperties.forEach(() => {
-      const selected = this.getCircularArrayElement(cleanGameProperties, startFromIndex)
-      selected.isAvailable = false
-      startFromIndex += game.RandomNumber
-    })
-
-    return this.predict(game, startFromIndex)
+    return Promise.resolve(game)
   }
 
   public populatePersonProperties(game: Game, property: PersonProperty[]): Game {
@@ -93,19 +70,21 @@ export default class GameSerice {
     return [...game.MASH, ...game.Person, ...game.Job, ...game.Kids, ...game.Car]
   }
 
-  private findByIsAvailableProperty(property: Property[]): Property | undefined {
-    return property.find((property) => property.isAvailable)
-  }
-
   private generateOutcomeStringFromGame(game: Game): string {
     const MASH = game.MASH.find((property: Property) => property.isAvailable)?.value
-    return `You will live in a ${MASH}`
+    const person = game.Person.find((property: Property) => property.isAvailable)?.value
+    const job = game.Job.find((property: Property) => property.isAvailable)?.value
+    const kids = game.Kids.find((property: Property) => property.isAvailable)?.value
+    const car = game.Car.find((property: Property) => property.isAvailable)?.value
+    return `You will live in a ${MASH}, you will marry ${person}, you will work as a ${job}, you will have ${kids} children and you will drive a ${car}`
   }
 
-  private getCircularArrayElement<T>(array: T[], index: number): any {
-    if (!array.length) return null
+  private predictFromProperties(array: Property[]): Property[] {
+    const propertyToKeep = Math.floor(Math.random() * array.length)
+    array.forEach((property: Property, index: number) => {
+      if (index !== propertyToKeep) property.isAvailable = false
+    })
 
-    const circularIndex = index % array.length
-    return array[circularIndex]
+    return array
   }
 }
