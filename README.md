@@ -29,3 +29,7 @@ bun test:unit
 ```sh
 bun lint
 ```
+
+## Dockerise the game
+
+From the root directory run `docker build . -f .docker/Dockerfile -t mash:latest`

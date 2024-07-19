@@ -11,23 +11,23 @@ describe('MashGrid', () => {
 
   it('renders properly', () => {
     const wrapper = mount(MashGrid, {
-      props: {titles: ['MASH']},
+      props: { titles: ['MASH'] },
       global: {
         plugins: [
           createTestingPinia({
-            createSpy: vi.fn, 
+            createSpy: vi.fn,
             initialState: {
               game: {
                 currentGame: {
                   Predicted: false,
                   Outcome: '',
-                  MASH: [{value: 'Mansion', isAvailable: true}],
+                  MASH: [{ value: 'Mansion', isAvailable: true }],
                   Person: [],
                   Job: [],
                   Car: [],
                   Kids: []
                 }
-              },
+              }
             }
           })
         ]

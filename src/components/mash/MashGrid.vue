@@ -5,10 +5,12 @@ defineProps<{
 
 import MashSection from '@/components/mash/MashSection.vue'
 import LoadingDots from '@/components/elements/LoadingDots.vue'
+import BasicButton from '@/components/elements/BasicButton.vue'
 import { useGameStore } from '@/stores/game'
 import { ref } from 'vue'
 import GameSerice from '@/services/game.service'
 import RandomiserService from '@/services/randomiser.service'
+import type { Game } from '@/types/Game'
 
 const gameStore = useGameStore()
 const gameService = new GameSerice(new RandomiserService())
@@ -19,30 +21,35 @@ const getProperty = (obj: any, key: string): [] => {
 
 const predicting = ref(false)
 
+const retry = async () => {
+  gameService.reset(gameStore.currentGame).then((game: Game) => {
+    gameStore.currentGame = game
+  })
+}
+
 const predict = async () => {
   predicting.value = true
-  gameService.predict(gameStore.currentGame)
+  gameService
+    .predict(gameStore.currentGame)
     .then((game: Game) => {
       gameStore.currentGame = game
       gameStore.previousResults.push(game)
     })
     .then(() => {
-      setTimeout(() => predicting.value = false, 1000)
+      setTimeout(() => (predicting.value = false), 1000)
     })
-  
 }
 </script>
 
 <template>
   <section class="flex mx-auto items-center w-full">
     <div class="mx-auto items-center">
-      <button
-        type="button"
-        @click.prevent="predict"
-        class="mx-auto bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-      >
-        Predict your future!
-      </button>
+      <BasicButton
+        v-if="gameStore.currentGame.Predicted && !predicting"
+        text="Retry"
+        @click-event="retry"
+      />
+      <BasicButton v-else text="Predict your future" @click-event="predict" />
     </div>
   </section>
   <section class="flex mx-auto">

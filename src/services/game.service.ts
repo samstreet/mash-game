@@ -5,7 +5,6 @@ import type { KidsProperty } from '@/types/KidsProperty'
 import type { CarProperty } from '@/types/CarProperty'
 import type { PersonProperty } from '@/types/PersonProperty'
 import type { Property } from '@/types/Property'
-import type { MashProperty } from '@/types/MashProperty'
 
 export default class GameSerice {
   constructor(private readonly randomiser: RandomiserService) {}
@@ -47,7 +46,20 @@ export default class GameSerice {
     return game
   }
 
-  public predict(game: Game): Promise<Game> {
+  public reset(game: Game): Promise<Game> {
+    this.resetProperties(game.MASH)
+    this.resetProperties(game.Person)
+    this.resetProperties(game.Job)
+    this.resetProperties(game.Kids)
+    this.resetProperties(game.Car)
+
+    game.Predicted = false
+    game.Outcome = ''
+
+    return Promise.resolve(game)
+  }
+
+  public async predict(game: Game): Promise<Game> {
     this.predictFromProperties(game.MASH)
     this.predictFromProperties(game.Person)
     this.predictFromProperties(game.Job)
@@ -55,7 +67,7 @@ export default class GameSerice {
     this.predictFromProperties(game.Car)
 
     game.Predicted = true
-    game.Outcome = this.generateOutcomeStringFromGame(game)
+    game.Outcome = await this.generateOutcomeStringFromGame(game).then((value) => value)
 
     return Promise.resolve(game)
   }
@@ -66,23 +78,38 @@ export default class GameSerice {
     return game
   }
 
-  public allPropertiesAsArray(game: Game): Array<Property> {
-    return [...game.MASH, ...game.Person, ...game.Job, ...game.Kids, ...game.Car]
+  private async generateOutcomeStringFromGame(game: Game): Promise<string> {
+    const MASH = await this.findAvailablePropertyValue(game.MASH).then((value) => value)
+    const person = await this.findAvailablePropertyValue(game.Person).then((value) => value)
+    const job = await this.findAvailablePropertyValue(game.Job).then((value) => value)
+    const kids = await this.findAvailablePropertyValue(game.Kids).then((value) => value)
+    const car = await this.findAvailablePropertyValue(game.Car).then((value) => value)
+
+    return Promise.resolve(
+      `You will live in a ${MASH}, you will marry ${person}, you will work as a ${job}, you will have ${kids} children and you will drive a ${car}`
+    )
   }
 
-  private generateOutcomeStringFromGame(game: Game): string {
-    const MASH = game.MASH.find((property: Property) => property.isAvailable)?.value
-    const person = game.Person.find((property: Property) => property.isAvailable)?.value
-    const job = game.Job.find((property: Property) => property.isAvailable)?.value
-    const kids = game.Kids.find((property: Property) => property.isAvailable)?.value
-    const car = game.Car.find((property: Property) => property.isAvailable)?.value
-    return `You will live in a ${MASH}, you will marry ${person}, you will work as a ${job}, you will have ${kids} children and you will drive a ${car}`
+  private findAvailablePropertyValue(properties: Property[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const value = properties.find((property: Property) => property.isAvailable)?.value
+      resolve(value)
+      reject('')
+    })
   }
 
   private predictFromProperties(array: Property[]): Property[] {
     const propertyToKeep = Math.floor(Math.random() * array.length)
     array.forEach((property: Property, index: number) => {
       if (index !== propertyToKeep) property.isAvailable = false
+    })
+
+    return array
+  }
+
+  private resetProperties(array: Property[]): Property[] {
+    array.forEach((property: Property, index: number) => {
+      property.isAvailable = true
     })
 
     return array

@@ -6,7 +6,15 @@ describe('game.service', () => {
   it('generates a new game', () => {
     const service = new GameSerice(new RandomiserService())
     const game = service.newGame()
-    const expectedProperties: string[] = ['MASH', 'Predicted', 'Outcome', 'Person', 'Car', 'Job', 'Kids']
+    const expectedProperties: string[] = [
+      'MASH',
+      'Predicted',
+      'Outcome',
+      'Person',
+      'Car',
+      'Job',
+      'Kids'
+    ]
 
     expectedProperties.forEach((property: string) => {
       expect(game).toHaveProperty(property)
